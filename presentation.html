@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПлиткаПро — Презентация проекта</title>
+<style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+        --primary: #6366f1;
+        --primary-dark: #4f46e5;
+        --secondary: #ec4899;
+        --dark: #1e293b;
+        --gray: #64748b;
+        --light: #f1f5f9;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --cyan: #06b6d4;
+    }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        background: #0f172a;
+        color: white;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== ОБЁРТКА СЛАЙДОВ ===== */
+    .deck {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+    }
+    .slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6vh 8vw;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(60px);
+        transition: opacity 0.5s ease, transform 0.5s ease, visibility 0.5s;
+        overflow-y: auto;
+    }
+    .slide.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0);
+    }
+    .slide.prev { transform: translateX(-60px); }
+
+    .slide-content {
+        max-width: 1200px;
+        width: 100%;
+        margin: auto;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* ===== ФОНОВЫЕ ГРАДИЕНТЫ ДЛЯ ТИПОВ СЛАЙДОВ ===== */
+    .bg-hero     { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .bg-problem  { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); }
+    .bg-solution { background: linear-gradient(135deg, #0f766e 0%, #065f46 100%); }
+    .bg-stack    { background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%); }
+    .bg-arch     { background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%); }
+    .bg-security { background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%); }
+    .bg-db       { background: linear-gradient(135deg, #164e63 0%, #0c4a6e 100%); }
+    .bg-api      { background: linear-gradient(135deg, #831843 0%, #4c0519 100%); }
+    .bg-ui       { background: linear-gradient(135deg, #78350f 0%, #431407 100%); }
+    .bg-demo     { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+    .bg-final    { background: linear-gradient(135deg, #4338ca 0%, #be185d 100%); }
+
+    /* Декоративные пятна */
+    .slide::before, .slide::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.25;
+        pointer-events: none;
+    }
+    .slide::before {
+        width: 400px; height: 400px;
+        background: var(--secondary);
+        top: -150px; right: -100px;
+    }
+    .slide::after {
+        width: 500px; height: 500px;
+        background: var(--cyan);
+        bottom: -200px; left: -150px;
+    }
+
+    /* ===== ТИПОГРАФИКА ===== */
+    .slide h1 {
+        font-size: clamp(2rem, 6vw, 5rem);
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -1.5px;
+        margin-bottom: 24px;
+    }
+    .slide h1 .accent {
+        background: linear-gradient(90deg, #fde047, #fb923c);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .slide h2 {
+        font-size: clamp(1.6rem, 4vw, 3rem);
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -1px;
+        margin-bottom: 16px;
+    }
+    .slide h2::before {
+        content: '';
+        display: block;
+        width: 60px;
+        height: 5px;
+        background: linear-gradient(90deg, #fde047, #fb923c);
+        border-radius: 3px;
+        margin-bottom: 24px;
+    }
+    .slide .subtitle {
+        font-size: clamp(1rem, 1.8vw, 1.35rem);
+        opacity: 0.85;
+        line-height: 1.6;
+        margin-bottom: 40px;
+        max-width: 850px;
+    }
+    .slide .lead {
+        font-size: clamp(1rem, 1.6vw, 1.25rem);
+        opacity: 0.85;
+        line-height: 1.7;
+        max-width: 800px;
+    }
+    .badge {
+        display: inline-block;
+        padding: 8px 18px;
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.25);
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+        backdrop-filter: blur(10px);
+    }
+
+    /* ===== СЕТКИ КАРТОЧЕК ===== */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 32px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 32px; }
+
+    .card {
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 20px;
+        padding: 24px;
+        backdrop-filter: blur(12px);
+        transition: transform 0.3s, background 0.3s;
+    }
+    .card:hover {
+        transform: translateY(-4px);
+        background: rgba(255,255,255,0.13);
+    }
+    .card .icon {
+        font-size: 2.2rem;
+        margin-bottom: 12px;
+        display: block;
+    }
+    .card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+        font-weight: 700;
+    }
+    .card p {
+        font-size: 0.92rem;
+        opacity: 0.85;
+        line-height: 1.55;
+    }
+    .card.problem { border-left: 4px solid var(--danger); }
+    .card.solution { border-left: 4px solid var(--success); }
+
+    /* ===== СПИСКИ ===== */
+    .check-list { list-style: none; margin-top: 20px; }
+    .check-list li {
+        padding: 12px 0 12px 44px;
+        position: relative;
+        font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+        line-height: 1.5;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .check-list li:last-child { border-bottom: none; }
+    .check-list li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        top: 10px;
+        width: 28px;
+        height: 28px;
+        background: var(--success);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        font-weight: 800;
+        color: white;
+    }
+    .check-list.cross li::before {
+        content: '✕';
+        background: var(--danger);
+    }
+
+    /* ===== БЛОК КОДА ===== */
+    pre.code {
+        background: rgba(0,0,0,0.4);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
+        padding: 20px 24px;
+        font-family: 'SF Mono', Monaco, 'Cascadia Code', Consolas, monospace;
+        font-size: clamp(0.78rem, 1.1vw, 0.95rem);
+        line-height: 1.7;
+        overflow-x: auto;
+        margin-top: 24px;
+        color: #e2e8f0;
+    }
+    pre.code .kw { color: #c084fc; }
+    pre.code .str { color: #86efac; }
+    pre.code .cm { color: #64748b; font-style: italic; }
+    pre.code .fn { color: #60a5fa; }
+    pre.code .num { color: #fbbf24; }
+
+    /* ===== СХЕМА АРХИТЕКТУРЫ ===== */
+    .arch {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr auto 1fr;
+        gap: 16px;
+        align-items: center;
+        margin-top: 40px;
+    }
+    .arch-node {
+        background: rgba(255,255,255,0.1);
+        border: 2px solid rgba(255,255,255,0.25);
+        border-radius: 16px;
+        padding: 24px 16px;
+        text-align: center;
+        transition: all 0.3s;
+    }
+    .arch-node:hover {
+        background: rgba(255,255,255,0.18);
+        border-color: #fde047;
+        transform: scale(1.05);
+    }
+    .arch-node .icon { font-size: 2.2rem; margin-bottom: 8px; display: block; }
+    .arch-node .label { font-weight: 700; font-size: 0.95rem; }
+    .arch-node .desc { font-size: 0.78rem; opacity: 0.75; margin-top: 4px; }
+    .arch-arrow {
+        font-size: 1.8rem;
+        opacity: 0.5;
+        animation: pulse-arrow 2s infinite;
+    }
+    @keyframes pulse-arrow {
+        0%, 100% { opacity: 0.4; transform: translateX(0); }
+        50% { opacity: 1; transform: translateX(6px); }
+    }
+
+    /* ===== СХЕМА БД ===== */
+    .db-schema {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        margin-top: 32px;
+    }
+    .db-table {
+        background: rgba(255,255,255,0.06);
+        border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 14px;
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+    .db-table:hover {
+        border-color: #fbbf24;
+        transform: translateY(-4px);
+    }
+    .db-table-header {
+        padding: 12px 16px;
+        background: linear-gradient(135deg, #4338ca, #be185d);
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-align: center;
+    }
+    .db-table ul { list-style: none; padding: 12px 16px; }
+    .db-table li {
+        padding: 5px 0;
+        font-size: 0.82rem;
+        font-family: 'SF Mono', Monaco, monospace;
+        color: #cbd5e1;
+        border-bottom: 1px dashed rgba(255,255,255,0.08);
+    }
+    .db-table li:last-child { border-bottom: none; }
+    .db-table li .pk { color: #fbbf24; font-weight: 700; }
+    .db-table li .fk { color: #86efac; font-weight: 700; }
+
+    /* ===== API СПИСОК ===== */
+    .api-list { margin-top: 24px; }
+    .api-row {
+        display: grid;
+        grid-template-columns: 90px 1fr;
+        gap: 20px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        align-items: center;
+        font-size: clamp(0.85rem, 1.2vw, 0.98rem);
+    }
+    .api-row:last-child { border-bottom: none; }
+    .method {
+        padding: 5px 12px;
+        border-radius: 8px;
+        font-weight: 800;
+        font-size: 0.78rem;
+        text-align: center;
+        letter-spacing: 0.5px;
+        font-family: 'SF Mono', Monaco, monospace;
+    }
+    .m-get    { background: rgba(16,185,129,0.25); color: #86efac; }
+    .m-post   { background: rgba(59,130,246,0.25); color: #93c5fd; }
+    .m-patch  { background: rgba(245,158,11,0.25); color: #fcd34d; }
+    .m-delete { background: rgba(239,68,68,0.25); color: #fca5a5; }
+    .api-path {
+        font-family: 'SF Mono', Monaco, monospace;
+        color: #e2e8f0;
+    }
+    .api-desc {
+        display: block;
+        font-size: 0.78rem;
+        opacity: 0.65;
+        margin-top: 2px;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* ===== ДЕМО-СТАТЫ ===== */
+    .stats-demo {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-top: 40px;
+    }
+    .stat-demo {
+        background: rgba(255,255,255,0.08);
+        border-radius: 16px;
+        padding: 24px 12px;
+        text-align: center;
+        border: 1px solid rgba(255,255,255,0.15);
+    }
+    .stat-demo .v {
+        font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+        font-weight: 800;
+        background: linear-gradient(135deg, #fde047, #fb923c);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .stat-demo .l {
+        font-size: 0.85rem;
+        opacity: 0.8;
+        margin-top: 6px;
+    }
+
+    /* ===== НАВИГАЦИЯ ===== */
+    .nav {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(0,0,0,0.5);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 50px;
+        padding: 8px 12px;
+        backdrop-filter: blur(20px);
+        z-index: 100;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .nav button {
+        background: rgba(255,255,255,0.1);
+        border: none;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+    .nav button:hover:not(:disabled) {
+        background: var(--primary);
+        transform: scale(1.1);
+    }
+    .nav button:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+    .nav .counter {
+        font-size: 0.9rem;
+        font-weight: 700;
+        padding: 0 12px;
+        min-width: 70px;
+        text-align: center;
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* Прогресс-бар */
+    .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #fde047, #fb923c);
+        z-index: 200;
+        transition: width 0.4s ease;
+        box-shadow: 0 0 20px rgba(253,224,71,0.5);
+    }
+
+    /* Подсказка клавиш */
+    .keys-hint {
+        position: fixed;
+        top: 20px;
+        right: 24px;
+        font-size: 0.75rem;
+        opacity: 0.5;
+        z-index: 100;
+        background: rgba(0,0,0,0.4);
+        padding: 8px 14px;
+        border-radius: 50px;
+        backdrop-filter: blur(10px);
+        display: flex;
+        gap: 12px;
+        pointer-events: none;
+    }
+    .keys-hint kbd {
+        background: rgba(255,255,255,0.15);
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 0.7rem;
+        font-weight: 700;
+    }
+
+    /* Номера слайдов (десктоп) */
+    .dots {
+        position: fixed;
+        right: 24px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 100;
+    }
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.25);
+        cursor: pointer;
+        transition: all 0.3s;
+        border: none;
+        padding: 0;
+    }
+    .dot:hover { background: rgba(255,255,255,0.5); transform: scale(1.3); }
+    .dot.active {
+        background: #fde047;
+        transform: scale(1.5);
+        box-shadow: 0 0 15px rgba(253,224,71,0.7);
+    }
+
+    /* ===== АДАПТИВ ===== */
+    @media (max-width: 900px) {
+        .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+        .arch { grid-template-columns: 1fr; }
+        .arch-arrow { transform: rotate(90deg); }
+        .stats-demo { grid-template-columns: 1fr 1fr; }
+        .dots { display: none; }
+        .keys-hint { display: none; }
+    }
+    @media (max-width: 600px) {
+        .slide { padding: 40px 20px 100px; }
+        .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; gap: 14px; }
+        .slide h2::before { width: 40px; height: 4px; margin-bottom: 16px; }
+        .api-row { grid-template-columns: 80px 1fr; gap: 10px; }
+        .nav { bottom: 12px; }
+    }
+    @media (min-width: 1600px) {
+        .slide-content { max-width: 1400px; }
+    }
+
+    /* Логотип в углу */
+    .corner-logo {
+        position: fixed;
+        top: 20px;
+        left: 24px;
+        font-size: 1.1rem;
+        font-weight: 800;
+        z-index: 100;
+        background: linear-gradient(135deg, #fde047, #fb923c);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        pointer-events: none;
+        letter-spacing: -0.5px;
+    }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<div class="corner-logo">🧱 ПлиткаПро</div>
+<div class="keys-hint"><kbd>←</kbd><kbd>→</kbd> или <kbd>Space</kbd> для навигации</div>
+<div class="dots" id="dots"></div>
+
+<div class="deck" id="deck">
+
+    <!-- СЛАЙД 1: Титульный -->
+    <div class="slide bg-hero active">
+        <div class="slide-content" style="text-align:center;">
+            <div class="badge">Презентация проекта · 2026</div>
+            <h1>ПлиткаПро<br><span class="accent">Плиточные работы под ключ</span></h1>
+            <p class="subtitle" style="margin-left:auto; margin-right:auto;">
+                Веб-приложение с системой заявок, личным кабинетом,
+                панелью администратора и безопасным хранением данных.
+            </p>
+            <p style="opacity:0.7; font-size:1rem; margin-top:20px;">
+                Node.js · Express · SQLite · bcrypt · Vanilla JS
+            </p>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 2: Проблема -->
+    <div class="slide bg-problem">
+        <div class="slide-content">
+            <h2>Как было — проблема</h2>
+            <p class="subtitle">
+                Первая версия сайта хранила всё в браузере (localStorage). Это работало, но имело серьёзные недостатки.
+            </p>
+            <div class="grid-2">
+                <div class="card problem">
+                    <span class="icon">🔓</span>
+                    <h3>Пароли в открытом виде</h3>
+                    <p>Любой, кто открыл DevTools → localStorage, видел пароли всех пользователей. Катастрофа.</p>
+                </div>
+                <div class="card problem">
+                    <span class="icon">📱</span>
+                    <h3>Данные только на одном устройстве</h3>
+                    <p>Заявка, созданная с телефона, не видна на компьютере. Нет синхронизации.</p>
+                </div>
+                <div class="card problem">
+                    <span class="icon">🗑️</span>
+                    <h3>Стирание кэша = потеря данных</h3>
+                    <p>Очистка браузера или режим инкогнито — и все заявки исчезают навсегда.</p>
+                </div>
+                <div class="card problem">
+                    <span class="icon">🚫</span>
+                    <h3>Нет настоящей авторизации</h3>
+                    <p>Любой мог «притвориться» админом, поменяв пару значений в localStorage.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 3: Решение -->
+    <div class="slide bg-solution">
+        <div class="slide-content">
+            <h2>Как стало — решение</h2>
+            <p class="subtitle">
+                Полноценный клиент-сервер: фронтенд общается с API, который работает с настоящей базой данных.
+            </p>
+            <ul class="check-list">
+                <li><b>Настоящий сервер</b> на Node.js + Express — обрабатывает запросы от всех клиентов.</li>
+                <li><b>SQLite-база</b> — данные хранятся в одном файле, синхронизируются между устройствами.</li>
+                <li><b>bcrypt-хеширование</b> паролей — даже при утечке БД пароли не читаемы.</li>
+                <li><b>Токен-сессии</b> — 256-битный токен на 30 дней, хранится в БД.</li>
+                <li><b>Роли</b> — админ видит все заявки, обычный пользователь — только свои.</li>
+                <li><b>Полная валидация</b> и защита от SQL-инъекций через prepared statements.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 4: Стек -->
+    <div class="slide bg-stack">
+        <div class="slide-content">
+            <h2>Технологический стек</h2>
+            <p class="subtitle">Минимум зависимостей — только то, что реально нужно.</p>
+            <div class="grid-3">
+                <div class="card">
+                    <span class="icon">🟩</span>
+                    <h3>Node.js 26</h3>
+                    <p>Среда выполнения JavaScript на сервере.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🚂</span>
+                    <h3>Express 4</h3>
+                    <p>Минималистичный веб-фреймворк для API.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🗄️</span>
+                    <h3>better-sqlite3</h3>
+                    <p>Синхронный драйвер SQLite — быстрый и простой.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🔐</span>
+                    <h3>bcryptjs</h3>
+                    <p>Хеширование паролей с солью, 10 раундов.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🎲</span>
+                    <h3>crypto (Node)</h3>
+                    <p>Генерация 256-битных токенов сессий.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🌐</span>
+                    <h3>Vanilla JS</h3>
+                    <p>Фронтенд без фреймворков — чистый, быстрый, лёгкий.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 5: Архитектура -->
+    <div class="slide bg-arch">
+        <div class="slide-content">
+            <h2>Архитектура</h2>
+            <p class="subtitle">Классическая трёхзвенка: клиент — сервер — база данных.</p>
+            <div class="arch">
+                <div class="arch-node">
+                    <span class="icon">🖥️</span>
+                    <div class="label">Браузер</div>
+                    <div class="desc">HTML + CSS + JS<br>fetch → API</div>
+                </div>
+                <div class="arch-arrow">➜</div>
+                <div class="arch-node">
+                    <span class="icon">🚂</span>
+                    <div class="label">Сервер</div>
+                    <div class="desc">Node.js + Express<br>REST API</div>
+                </div>
+                <div class="arch-arrow">➜</div>
+                <div class="arch-node">
+                    <span class="icon">🗄️</span>
+                    <div class="label">SQLite</div>
+                    <div class="desc">Файл tilepro.db<br>3 таблицы</div>
+                </div>
+            </div>
+            <p class="lead" style="margin-top:40px;">
+                Браузер общается с сервером только через <b>JSON API</b>. Никакой бизнес-логики на клиенте —
+                все проверки прав доступа и валидация делаются на сервере.
+            </p>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 6: Безопасность -->
+    <div class="slide bg-security">
+        <div class="slide-content">
+            <h2>Безопасность</h2>
+            <p class="subtitle">Что именно защищено и как.</p>
+            <div class="grid-2">
+                <div class="card">
+                    <span class="icon">🔐</span>
+                    <h3>Хеширование паролей</h3>
+                    <p>bcrypt с 10 раундами и автосолью. Один и тот же пароль у двух пользователей даёт разные хеши.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🎲</span>
+                    <h3>Крипто-токены</h3>
+                    <p><code>crypto.randomBytes(32)</code> = 2<sup>256</sup> вариантов. Перебор невозможен.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🛡️</span>
+                    <h3>SQL-инъекции</h3>
+                    <p>Все запросы через prepared statements с плейсхолдерами <code>?</code>. Юзер-ввод никогда не попадает в SQL как код.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">⏳</span>
+                    <h3>TTL сессий</h3>
+                    <p>Срок жизни — 30 дней. Просроченные сессии удаляются автоматически каждый час.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🎭</span>
+                    <h3>Проверка ролей</h3>
+                    <p>Админ-эндпоинты защищены middleware. Пользователь не получит чужие заявки.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🧼</span>
+                    <h3>XSS-защита</h3>
+                    <p>Все данные из БД экранируются через <code>escapeHtml()</code> перед вставкой в DOM.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 7: База данных -->
+    <div class="slide bg-db">
+        <div class="slide-content">
+            <h2>Схема базы данных</h2>
+            <p class="subtitle">Три таблицы с связями и индексами для быстрых запросов.</p>
+            <div class="db-schema">
+                <div class="db-table">
+                    <div class="db-table-header">👥 users</div>
+                    <ul>
+                        <li><span class="pk">id</span> — PK</li>
+                        <li>name</li>
+                        <li>email — UNIQUE</li>
+                        <li>password_hash</li>
+                        <li>role</li>
+                        <li>created_at</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <div class="db-table-header">📋 requests</div>
+                    <ul>
+                        <li><span class="pk">id</span> — PK</li>
+                        <li><span class="fk">user_id</span> — FK → users</li>
+                        <li>name, phone, email</li>
+                        <li>service, area, address</li>
+                        <li>comment</li>
+                        <li>status, admin_note</li>
+                        <li>created_at</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <div class="db-table-header">🔑 sessions</div>
+                    <ul>
+                        <li><span class="pk">token</span> — PK</li>
+                        <li><span class="fk">user_id</span> — FK → users</li>
+                        <li>created_at</li>
+                        <li>expires_at</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="lead" style="margin-top:32px;">
+                Индексы ускоряют выборки: <code>idx_requests_user</code>, <code>idx_requests_status</code>,
+                <code>idx_sessions_exp</code>. Внешние ключи настроены с <code>ON DELETE CASCADE / SET NULL</code>.
+            </p>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 8: API -->
+    <div class="slide bg-api">
+        <div class="slide-content">
+            <h2>REST API</h2>
+            <p class="subtitle">10 эндпоинтов покрывают всё: от регистрации до удаления заявки.</p>
+            <div class="api-list">
+                <div class="api-row">
+                    <span class="method m-post">POST</span>
+                    <div><span class="api-path">/api/register</span><span class="api-desc">Создать аккаунт</span></div>
+                </div>
+                <div class="api-row">
+                    <span class="method m-post">POST</span>
+                    <div><span class="api-path">/api/login</span><span class="api-desc">Войти, получить токен</span></div>
+                </div>
+                <div class="api-row">
+                    <span class="method m-post">POST</span>
+                    <div><span class="api-path">/api/logout</span><span class="api-desc">Уничтожить сессию</span></div>
+                </div>
+                <div class="api-row">
+                    <span class="method m-get">GET</span>
+                    <div><span class="api-path">/api/me</span><span class="api-desc">Текущий пользователь</span></div>
+                </div>
+                <div class="api-row">
+                    <span class="method m-get">GET</span>
+                    <div><span class="api-path">/api/requests</span><span class="api-desc">Список заявок (админ — все, юзер — свои)</span></div>
+                </div>
+                <div class="api-row">
+                    <span class="method m-post">POST</span>
+                    <div><span class="api-path">/api/requests</span><span class="api-desc">Создать заявку</span></div>
+                </div>
+                <div class="api-row">
+                    <span class="method m-patch">PATCH</span>
+                    <div><span class="api-path">/api/requests/:id</span><span class="api-desc">Сменить статус / заметку</span></div>
+                </div>
+                <div class="api-row">
+                    <span class="method m-delete">DELETE</span>
+                    <div><span class="api-path">/api/requests/:id</span><span class="api-desc">Удалить (только админ)</span></div>
+                </div>
+                <div class="api-row">
+                    <span class="method m-get">GET</span>
+                    <div><span class="api-path">/api/users/count</span><span class="api-desc">Кол-во клиентов</span></div>
+                </div>
+                <div class="api-row">
+                    <span class="method m-get">GET</span>
+                    <div><span class="api-path">/api/health</span><span class="api-desc">Проверка работоспособности</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 9: UI -->
+    <div class="slide bg-ui">
+        <div class="slide-content">
+            <h2>Интерфейс</h2>
+            <p class="subtitle">Адаптивный, работает на всех устройствах — от iPhone до 4K-монитора.</p>
+            <div class="grid-2">
+                <div class="card">
+                    <span class="icon">📱</span>
+                    <h3>Мобильный first</h3>
+                    <p>Bottom-sheet модалки, hamburger-меню, safe-area для iPhone с «монобровью».</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🎨</span>
+                    <h3>Современный дизайн</h3>
+                    <p>Градиенты, blur-эффекты, плавные анимации. Тёмный фон + акцентные цвета.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">♿</span>
+                    <h3>Доступность</h3>
+                    <p>Семантические теги, ARIA-атрибуты, focus-стили, поддержка клавиатуры.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">⚡</span>
+                    <h3>Производительность</h3>
+                    <p>0 фреймворков, ~30 КБ CSS + JS, мгновенная загрузка, никаких внешних CDN.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🌗</span>
+                    <h3>Тёмная тема</h3>
+                    <p>Поддержка <code>prefers-color-scheme</code> и <code>prefers-reduced-motion</code>.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">📊</span>
+                    <h3>Личный кабинет</h3>
+                    <p>Статистика, фильтры, карточки заявок, быстрое изменение статуса.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 10: Демо-цифры -->
+    <div class="slide bg-demo">
+        <div class="slide-content">
+            <h2>Проект в цифрах</h2>
+            <p class="subtitle">Компактно, но полностью функционально.</p>
+            <div class="stats-demo">
+                <div class="stat-demo"><div class="v">3</div><div class="l">таблицы в БД</div></div>
+                <div class="stat-demo"><div class="v">10</div><div class="l">эндпоинтов API</div></div>
+                <div class="stat-demo"><div class="v">105</div><div class="l">npm-пакетов</div></div>
+                <div class="stat-demo"><div class="v">0</div><div class="l">уязвимостей</div></div>
+            </div>
+            <div class="stats-demo" style="margin-top:16px;">
+                <div class="stat-demo"><div class="v">~350</div><div class="l">строк server.js</div></div>
+                <div class="stat-demo"><div class="v">~30 КБ</div><div class="l">index.html</div></div>
+                <div class="stat-demo"><div class="v">30 дн.</div><div class="l">жизнь сессии</div></div>
+                <div class="stat-demo"><div class="v">10</div><div class="l">раундов bcrypt</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 11: Итоги -->
+    <div class="slide bg-final">
+        <div class="slide-content" style="text-align:center;">
+            <div class="badge">Готово к использованию</div>
+            <h1>Что получилось</h1>
+            <p class="subtitle" style="margin-left:auto; margin-right:auto;">
+                Полноценное веб-приложение, готовое к работе в продакшене:
+                безопасное, адаптивное, легко расширяемое.
+            </p>
+            <div class="grid-3" style="text-align:left; margin-top:40px;">
+                <div class="card">
+                    <span class="icon">✅</span>
+                    <h3>Работает</h3>
+                    <p>Запускается одной командой <code>npm start</code>.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🔒</span>
+                    <h3>Безопасно</h3>
+                    <p>bcrypt, токены, защита от инъекций и XSS.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">📈</span>
+                    <h3>Масштабируется</h3>
+                    <p>Легко заменить SQLite на PostgreSQL, добавить новые сущности.</p>
+                </div>
+            </div>
+            <p style="margin-top:40px; opacity:0.75; font-size:1rem;">
+                Спасибо за внимание! · 🌐 localhost:3000
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<!-- НАВИГАЦИЯ -->
+<div class="nav">
+    <button id="prevBtn" onclick="prevSlide()" aria-label="Назад">←</button>
+    <div class="counter" id="counter">1 / 11</div>
+    <button id="nextBtn" onclick="nextSlide()" aria-label="Вперёд">→</button>
+</div>
+
+<script>
+(function () {
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const total = slides.length;
+    let current = 0;
+    let isAnimating = false;
+
+    const counterEl = document.getElementById('counter');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const progressBar = document.getElementById('progressBar');
+    const dotsContainer = document.getElementById('dots');
+
+    /* Создаём точки */
+    slides.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Слайд ' + (i + 1));
+        dot.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(dot);
+    });
+    const dots = Array.from(dotsContainer.children);
+
+    function updateUI() {
+        counterEl.textContent = (current + 1) + ' / ' + total;
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === total - 1;
+        const pct = ((current + 1) / total) * 100;
+        progressBar.style.width = pct + '%';
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+
+    function goTo(index) {
+        if (isAnimating || index === current || index < 0 || index >= total) return;
+        isAnimating = true;
+
+        const direction = index > current ? 1 : -1;
+        const oldSlide = slides[current];
+        const newSlide = slides[index];
+
+        oldSlide.classList.remove('active');
+        if (direction > 0) oldSlide.classList.add('prev');
+        else oldSlide.classList.remove('prev');
+
+        newSlide.classList.remove('prev');
+        newSlide.classList.add('active');
+
+        current = index;
+        updateUI();
+
+        setTimeout(() => {
+            oldSlide.classList.remove('prev');
+            isAnimating = false;
+        }, 500);
+    }
+
+    window.nextSlide = () => goTo(current + 1);
+    window.prevSlide = () => goTo(current - 1);
+
+    /* Клавиатура */
+    document.addEventListener('keydown', (e) => {
+        if (['ArrowRight', 'ArrowDown', ' ', 'PageDown', 'Enter'].includes(e.key)) {
+            e.preventDefault();
+            nextSlide();
+        } else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) {
+            e.preventDefault();
+            prevSlide();
+        } else if (e.key === 'Home') {
+            e.preventDefault();
+            goTo(0);
+        } else if (e.key === 'End') {
+            e.preventDefault();
+            goTo(total - 1);
+        } else if (e.key === 'f' || e.key === 'F') {
+            // fullscreen
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen();
+            }
+        }
+    });
+
+    /* Клик по левой/правой половине экрана */
+    document.getElementById('deck').addEventListener('click', (e) => {
+        if (e.target.closest('button, a, .dot, .nav, .api-row, .card')) return;
+        const rect = document.getElementById('deck').getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        if (x > rect.width * 0.5) nextSlide();
+        else prevSlide();
+    });
+
+    /* Свайпы на мобильных */
+    let touchStartX = 0;
+    let touchStartY = 0;
+    document.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+            if (dx < 0) nextSlide();
+            else prevSlide();
+        }
+    }, { passive: true });
+
+    updateUI();
+})();
+</script>
+</body>
+</html>

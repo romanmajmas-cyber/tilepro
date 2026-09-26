@@ -1,0 +1,15 @@
+{
+  "name": "tilepro",
+  "version": "1.0.0",
+  "description": "ПлиткаПро — сайт плиточных работ с SQLite и bcrypt",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^12.11.1",
+    "express": "^4.19.2"
+  }
+}

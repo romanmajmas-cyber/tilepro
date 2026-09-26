@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#6366f1">
+<title>ПлиткаПро — Плиточные работы под ключ</title>
+<style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    :root {
+        --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #ec4899;
+        --dark: #1e293b; --gray: #64748b; --light: #f1f5f9;
+        --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
+        --radius: 24px; --header-h: 64px; --container-pad: clamp(16px, 4vw, 40px);
+    }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #fff; color: var(--dark); overflow-x: hidden; min-height: 100vh; line-height: 1.5; padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+    img, svg { max-width: 100%; height: auto; display: block; }
+    button, input, select, textarea { font-family: inherit; font-size: inherit; }
+
+    header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: rgba(255,255,255,0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 0 var(--container-pad); display: flex; justify-content: space-between; align-items: center; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.05); transition: all 0.3s; }
+    .logo { font-size: clamp(1.1rem, 2.5vw, 1.5rem); font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+    .logo::before { content: '🧱'; -webkit-text-fill-color: initial; font-size: 1.2em; }
+    .nav-desktop { display: flex; gap: clamp(14px, 2vw, 30px); align-items: center; }
+    .nav-desktop a { text-decoration: none; color: var(--dark); font-weight: 500; position: relative; transition: color 0.3s; cursor: pointer; font-size: 0.95rem; white-space: nowrap; }
+    .nav-desktop a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 0.3s; }
+    .nav-desktop a:hover::after { width: 100%; }
+    .nav-desktop a:hover { color: var(--primary); }
+    .burger { display: none; width: 44px; height: 44px; border: none; background: transparent; cursor: pointer; border-radius: 12px; position: relative; transition: background 0.3s; }
+    .burger:hover { background: var(--light); }
+    .burger span { position: absolute; left: 11px; width: 22px; height: 2px; background: var(--dark); border-radius: 2px; transition: all 0.3s; }
+    .burger span:nth-child(1) { top: 15px; }
+    .burger span:nth-child(2) { top: 21px; }
+    .burger span:nth-child(3) { top: 27px; }
+    .burger.active span:nth-child(1) { top: 21px; transform: rotate(45deg); }
+    .burger.active span:nth-child(2) { opacity: 0; }
+    .burger.active span:nth-child(3) { top: 21px; transform: rotate(-45deg); }
+    .mobile-menu { position: fixed; top: var(--header-h); left: 0; right: 0; background: white; box-shadow: 0 15px 40px rgba(0,0,0,0.12); padding: 16px var(--container-pad) 24px; transform: translateY(-120%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 99; max-height: calc(100vh - var(--header-h)); overflow-y: auto; }
+    .mobile-menu.active { transform: translateY(0); }
+    .mobile-menu a { display: block; padding: 16px 0; color: var(--dark); text-decoration: none; font-weight: 600; font-size: 1.05rem; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: color 0.2s; }
+    .mobile-menu a:active { color: var(--primary); }
+    .mobile-menu a:last-of-type { border-bottom: none; }
+    .mobile-menu .mobile-actions { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+    .mobile-menu .btn { justify-content: center; }
+
+    .btn { padding: 12px 28px; border: none; border-radius: 50px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; min-height: 44px; line-height: 1.2; }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; box-shadow: 0 8px 20px rgba(99,102,241,0.35); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(99,102,241,0.5); }
+    .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+    .btn-outline:hover { background: var(--primary); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-danger:hover { background: #dc2626; transform: translateY(-2px); }
+    .btn-success { background: var(--success); color: white; }
+    .btn-success:hover { background: #059669; }
+    .btn-small { padding: 8px 16px; font-size: 0.85rem; min-height: 36px; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--container-pad); width: 100%; }
+    .section { padding: clamp(48px, 8vw, 100px) 0; }
+    .section-title { text-align: center; font-size: clamp(1.5rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: 14px; letter-spacing: -0.5px; line-height: 1.15; }
+    .section-subtitle { text-align: center; color: var(--gray); font-size: clamp(0.95rem, 1.6vw, 1.1rem); margin-bottom: clamp(30px, 6vw, 60px); max-width: 600px; margin-left: auto; margin-right: auto; padding: 0 8px; line-height: 1.55; }
+
+    .hero { min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: calc(var(--header-h) + 40px) var(--container-pad) 60px; }
+    .hero::before, .hero::after { content: ''; position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; animation: float 8s ease-in-out infinite; pointer-events: none; }
+    .hero::before { width: min(400px, 60vw); height: min(400px, 60vw); background: #ec4899; top: -100px; right: -100px; }
+    .hero::after { width: min(500px, 70vw); height: min(500px, 70vw); background: #06b6d4; bottom: -150px; left: -150px; animation-delay: 3s; }
+    @keyframes float { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(30px,-30px) scale(1.1); } }
+    .hero-content { position: relative; z-index: 2; text-align: center; color: white; max-width: 800px; animation: fadeInUp 1s ease; }
+    .hero h1 { font-size: clamp(1.7rem, 7vw, 4rem); font-weight: 800; margin-bottom: clamp(14px, 3vw, 24px); line-height: 1.1; letter-spacing: -1px; }
+    .hero h1 span { background: linear-gradient(90deg, #fde047, #fb923c); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { font-size: clamp(0.95rem, 2vw, 1.25rem); margin-bottom: clamp(24px, 5vw, 40px); opacity: 0.95; line-height: 1.6; padding: 0 4px; }
+    .hero-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .hero-buttons .btn { padding: clamp(14px, 2vw, 16px) clamp(24px, 4vw, 36px); font-size: clamp(0.9rem, 1.5vw, 1.05rem); flex: 1 1 auto; min-width: 160px; }
+    .hero .btn-primary { background: white; color: var(--primary); box-shadow: 0 15px 35px rgba(0,0,0,0.25); }
+    .hero .btn-primary:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    .hero .btn-outline { color: white; border-color: rgba(255,255,255,0.6); }
+    .hero .btn-outline:hover { background: rgba(255,255,255,0.15); border-color: white; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: clamp(16px, 3vw, 30px); }
+    .service-card { background: white; border-radius: var(--radius); padding: clamp(24px, 4vw, 40px) clamp(20px, 3vw, 30px); box-shadow: 0 4px 20px rgba(0,0,0,0.06); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid #f1f5f9; position: relative; overflow: hidden; }
+    .service-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--primary), var(--secondary)); transform: scaleX(0); transform-origin: left; transition: transform 0.4s; }
+    .service-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(99,102,241,0.15); }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-icon { width: clamp(56px, 8vw, 70px); height: clamp(56px, 8vw, 70px); border-radius: 20px; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 20px; box-shadow: 0 10px 25px rgba(99,102,241,0.3); }
+    .service-card h3 { font-size: clamp(1.05rem, 1.8vw, 1.3rem); margin-bottom: 12px; color: var(--dark); line-height: 1.3; }
+    .service-card p { color: var(--gray); line-height: 1.6; margin-bottom: 16px; font-size: clamp(0.9rem, 1.4vw, 1rem); }
+    .service-price { font-size: clamp(1.05rem, 1.8vw, 1.2rem); font-weight: 700; color: var(--primary); }
+
+    .form-section { background: var(--light); }
+    .form-wrapper { max-width: 700px; margin: 0 auto; background: white; border-radius: var(--radius); padding: clamp(24px, 5vw, 50px); box-shadow: 0 20px 60px rgba(0,0,0,0.08); }
+    .form-group { margin-bottom: clamp(16px, 2.5vw, 22px); }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark); font-size: clamp(0.85rem, 1.4vw, 0.95rem); }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: clamp(12px, 2vw, 14px) clamp(14px, 2vw, 18px); border: 2px solid #e2e8f0; border-radius: 14px; font-size: 1rem; transition: all 0.3s; background: #f8fafc; color: var(--dark); -webkit-appearance: none; appearance: none; }
+    .form-group select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 14px center; background-size: 18px; padding-right: 44px; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(99,102,241,0.1); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 2vw, 18px); }
+
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; animation: fadeIn 0.3s; overflow-y: auto; }
+    .modal-overlay.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal { background: white; border-radius: var(--radius); padding: clamp(24px, 4vw, 40px); max-width: 480px; width: 100%; max-height: calc(100vh - 40px); overflow-y: auto; box-shadow: 0 25px 60px rgba(0,0,0,0.3); animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; margin: auto; }
+    .modal-large { max-width: 800px; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(40px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .modal h2 { font-size: clamp(1.25rem, 2.5vw, 1.6rem); margin-bottom: 8px; color: var(--dark); padding-right: 40px; }
+    .modal-subtitle { color: var(--gray); margin-bottom: clamp(20px, 3vw, 30px); font-size: clamp(0.85rem, 1.4vw, 0.95rem); }
+    .modal-close { position: absolute; top: 16px; right: 16px; background: var(--light); border: none; font-size: 1.2rem; cursor: pointer; color: var(--gray); width: 36px; height: 36px; border-radius: 50%; transition: all 0.3s; display: flex; align-items: center; justify-content: center; z-index: 5; }
+    .modal-close:hover { background: #e2e8f0; color: var(--dark); }
+
+    .tabs { display: flex; gap: 6px; margin-bottom: clamp(20px, 3vw, 30px); background: var(--light); padding: 6px; border-radius: 14px; }
+    .tab { flex: 1; padding: 12px; border: none; background: transparent; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; color: var(--gray); font-size: clamp(0.85rem, 1.4vw, 0.95rem); }
+    .tab.active { background: white; color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+    .request-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: clamp(16px, 2.5vw, 22px); margin-bottom: 16px; transition: all 0.3s; animation: fadeInUp 0.4s ease; }
+    .request-card:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .request-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 12px; flex-wrap: wrap; }
+    .request-title { font-weight: 700; font-size: clamp(1rem, 1.6vw, 1.1rem); color: var(--dark); }
+    .request-meta { color: var(--gray); font-size: clamp(0.8rem, 1.3vw, 0.9rem); display: flex; flex-direction: column; gap: 4px; margin-top: 8px; word-break: break-word; }
+    .request-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    .status-badge { padding: 6px 14px; border-radius: 20px; font-size: clamp(0.7rem, 1.1vw, 0.8rem); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+    .status-new { background: #dbeafe; color: #1e40af; }
+    .status-progress { background: #fef3c7; color: #92400e; }
+    .status-done { background: #d1fae5; color: #065f46; }
+    .status-cancelled { background: #fee2e2; color: #991b1b; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)); gap: clamp(10px, 2vw, 16px); margin-bottom: 30px; }
+    .stat-card { background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 16px; padding: clamp(14px, 2.5vw, 20px); text-align: center; border: 1px solid #e2e8f0; transition: all 0.3s; }
+    .stat-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+    .stat-value { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .stat-label { color: var(--gray); font-size: clamp(0.75rem, 1.2vw, 0.85rem); margin-top: 4px; font-weight: 500; }
+
+    .toast { position: fixed; bottom: 30px; right: 30px; background: var(--dark); color: white; padding: 16px 24px; border-radius: 14px; box-shadow: 0 15px 40px rgba(0,0,0,0.25); transform: translateX(400px); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; max-width: 350px; font-weight: 500; display: flex; align-items: center; gap: 12px; font-size: 0.95rem; word-break: break-word; }
+    .toast.show { transform: translateX(0); }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+
+    .admin-panel { background: var(--light); min-height: 100vh; padding: calc(var(--header-h) + 30px) 0 60px; display: none; }
+    .admin-panel.active { display: block; }
+    .panel-heading { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 16px; }
+    .panel-heading h1 { font-size: clamp(1.3rem, 3vw, 1.8rem); margin-bottom: 4px; }
+    .panel-heading p { color: var(--gray); font-size: clamp(0.85rem, 1.4vw, 1rem); }
+    .filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+    .filter-btn { padding: 9px 18px; border: 2px solid #e2e8f0; background: white; border-radius: 50px; cursor: pointer; font-weight: 600; transition: all 0.3s; color: var(--gray); font-size: clamp(0.8rem, 1.3vw, 0.9rem); min-height: 40px; }
+    .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .filter-btn.active { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-color: transparent; }
+    .empty { text-align: center; padding: 60px 20px; color: var(--gray); }
+    .empty-icon { font-size: 4rem; margin-bottom: 16px; opacity: 0.5; }
+
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: clamp(16px, 3vw, 30px); margin-top: clamp(30px, 5vw, 60px); }
+    .feature { text-align: center; padding: clamp(20px, 3vw, 30px) clamp(14px, 2vw, 20px); }
+    .feature-icon { font-size: clamp(2rem, 4vw, 2.5rem); margin-bottom: 16px; }
+    .feature h3 { margin-bottom: 10px; font-size: clamp(1rem, 1.6vw, 1.15rem); }
+    .feature p { color: var(--gray); line-height: 1.6; font-size: clamp(0.85rem, 1.3vw, 0.95rem); }
+
+    footer { background: var(--dark); color: white; padding: clamp(30px, 5vw, 50px) var(--container-pad) clamp(20px, 3vw, 30px); text-align: center; }
+    footer .logo { justify-content: center; margin-bottom: 16px; }
+    footer p { color: #94a3b8; margin-bottom: 8px; font-size: clamp(0.85rem, 1.3vw, 1rem); }
+
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem; flex-shrink: 0; }
+    .hidden { display: none !important; }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: var(--light); }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 5px; }
+
+    @media (max-width: 900px) { :root { --header-h: 60px; } .nav-desktop { gap: 16px; } .nav-desktop a { font-size: 0.9rem; } }
+    @media (max-width: 768px) {
+        :root { --header-h: 60px; --radius: 20px; }
+        .nav-desktop { display: none; }
+        .burger { display: block; }
+        .modal-overlay { padding: 0; align-items: flex-end; }
+        .modal { max-width: 100%; border-radius: var(--radius) var(--radius) 0 0; max-height: 92vh; animation: slideUpMobile 0.35s cubic-bezier(0.4, 0, 0.2, 1); padding-bottom: calc(clamp(24px, 4vw, 40px) + env(safe-area-inset-bottom)); }
+        @keyframes slideUpMobile { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal::before { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 40px; height: 4px; background: #cbd5e1; border-radius: 4px; }
+        .modal { padding-top: 30px; }
+        .modal-close { top: 20px; right: 16px; }
+        .form-row { grid-template-columns: 1fr; }
+        .hero { padding-top: calc(var(--header-h) + 30px); }
+        .hero-buttons { flex-direction: column; align-items: stretch; }
+        .hero-buttons .btn { width: 100%; }
+        .toast { left: 16px; right: 16px; bottom: 16px; max-width: none; justify-content: center; text-align: center; padding: 14px 20px; font-size: 0.9rem; }
+        .panel-heading { flex-direction: column; align-items: stretch; }
+        .panel-heading .btn { width: 100%; }
+        .request-header { flex-direction: column; }
+        .request-actions .btn { flex: 1 1 auto; }
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+        :root { --container-pad: 16px; --header-h: 56px; }
+        .logo::before { font-size: 1em; }
+        .hero h1 { letter-spacing: -0.5px; }
+        .hero-buttons .btn { padding: 14px 20px; font-size: 0.9rem; min-width: auto; }
+        .service-card { padding: 22px 18px; }
+        .service-icon { width: 52px; height: 52px; border-radius: 16px; }
+        .form-wrapper { padding: 22px 18px; border-radius: 18px; }
+        .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .stat-card { padding: 14px 10px; }
+        .stat-value { font-size: 1.5rem; }
+        .filters { gap: 8px; }
+        .filter-btn { padding: 8px 14px; font-size: 0.78rem; }
+        .request-actions .btn { width: 100%; }
+        .request-card { padding: 16px; border-radius: 14px; }
+        .user-info .btn span.btn-text { display: none; }
+        .avatar { width: 36px; height: 36px; font-size: 0.9rem; }
+    }
+    @media (max-width: 360px) { :root { --container-pad: 12px; } .logo { font-size: 1rem; } .logo::before { display: none; } .stats-grid { grid-template-columns: 1fr 1fr; } .stat-value { font-size: 1.3rem; } .stat-label { font-size: 0.7rem; } .hero h1 { font-size: 1.5rem; } .btn { padding: 10px 18px; font-size: 0.85rem; } .section-title { font-size: 1.4rem; } }
+    @media (min-width: 1440px) { .container { max-width: 1320px; } :root { --container-pad: 48px; } }
+    @media (min-width: 1920px) { .container { max-width: 1500px; } .hero h1 { font-size: 4.5rem; } }
+    @media (max-height: 500px) and (orientation: landscape) { .hero { min-height: auto; padding-top: calc(var(--header-h) + 30px); padding-bottom: 40px; } .hero h1 { font-size: 1.8rem; } .modal { max-height: 95vh; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo" onclick="showPage('home')">ПлиткаПро</div>
+    <nav class="nav-desktop">
+        <a onclick="scrollToSection('services')">Услуги</a>
+        <a onclick="scrollToSection('request')">Оставить заявку</a>
+        <a onclick="scrollToSection('features')">О нас</a>
+        <div id="authArea"></div>
+    </nav>
+    <button class="burger" id="burger" onclick="toggleMenu()" aria-label="Меню">
+        <span></span><span></span><span></span>
+    </button>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+    <a onclick="scrollToSection('services')">Услуги</a>
+    <a onclick="scrollToSection('request')">Оставить заявку</a>
+    <a onclick="scrollToSection('features')">О нас</a>
+    <div class="mobile-actions" id="mobileAuthArea"></div>
+</div>
+
+<main id="homePage">
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Плиточные работы <span>под ключ</span></h1>
+            <p>Профессиональная укладка плитки любой сложности. Быстро, качественно, с гарантией 3 года. Оставьте заявку — рассчитаем стоимость бесплатно.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="openRequest()">📝 Оставить заявку</button>
+                <button class="btn btn-outline" onclick="scrollToSection('services')">Наши услуги</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="services">
+        <div class="container">
+            <h2 class="section-title">Наши услуги</h2>
+            <p class="section-subtitle">Полный спектр плиточных работ от профессиональных мастеров</p>
+            <div class="services-grid">
+                <div class="service-card"><div class="service-icon">🏠</div><h3>Укладка плитки в квартире</h3><p>Кухня, ванная, санузел, коридор. Аккуратная укладка с соблюдением технологии.</p><div class="service-price">от 700 ₽/м²</div></div>
+                <div class="service-card"><div class="service-icon">🚿</div><h3>Ванная комната</h3><p>Полный цикл: стены, пол, гидроизоляция, затирка швов. Идеальный результат.</p><div class="service-price">от 1000 ₽/м²</div></div>
+                <div class="service-card"><div class="service-icon">🍳</div><h3>Кухонный фартук</h3><p>Укладка фартука из плитки, мозаики или керамогранита. Работаем с любыми материалами.</p><div class="service-price">от 900 ₽/м²</div></div>
+                <div class="service-card"><div class="service-icon">🧱</div><h3>Крупноформатная плитка</h3><p>Керамогранит 60×120, 120×120 и больше. Требует опыта и специального оборудования.</p><div class="service-price">от 1400 ₽/м²</div></div>
+                <div class="service-card"><div class="service-icon">🔨</div><h3>Демонтаж старой плитки</h3><p>Аккуратный демонтаж с вывозом мусора. Подготовка основания под новую укладку.</p><div class="service-price">от 350 ₽/м²</div></div>
+                <div class="service-card"><div class="service-icon">🌡️</div><h3>Тёплый пол</h3><p>Монтаж электрического или водяного тёплого пола под плитку с гарантией.</p><div class="service-price">от 800 ₽/м²</div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section form-section" id="request">
+        <div class="container">
+            <h2 class="section-title">Оставьте заявку</h2>
+            <p class="section-subtitle">Заполните форму — мы свяжемся с вами в течение 15 минут</p>
+            <div class="form-wrapper">
+                <form id="requestForm" onsubmit="submitRequest(event)">
+                    <div class="form-row">
+                        <div class="form-group"><label>Ваше имя *</label><input type="text" name="name" required placeholder="Иван Петров" autocomplete="name"></div>
+                        <div class="form-group"><label>Телефон *</label><input type="tel" name="phone" required placeholder="+7 (999) 123-45-67" autocomplete="tel"></div>
+                    </div>
+                    <div class="form-group"><label>Email</label><input type="email" name="email" placeholder="ivan@mail.ru" autocomplete="email"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Тип услуги *</label>
+                            <select name="service" required>
+                                <option value="">Выберите услугу</option>
+                                <option>Укладка плитки в квартире</option>
+                                <option>Ванная комната</option>
+                                <option>Кухонный фартук</option>
+                                <option>Крупноформатная плитка</option>
+                                <option>Демонтаж старой плитки</option>
+                                <option>Тёплый пол</option>
+                                <option>Другое</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Площадь, м²</label><input type="number" name="area" min="1" placeholder="25" inputmode="numeric"></div>
+                    </div>
+                    <div class="form-group"><label>Адрес объекта</label><input type="text" name="address" placeholder="г. Москва, ул. Примерная, д. 1" autocomplete="street-address"></div>
+                    <div class="form-group"><label>Комментарий</label><textarea name="comment" placeholder="Расскажите о вашей задаче подробнее..."></textarea></div>
+                    <button type="submit" class="btn btn-primary" style="width:100%; padding:16px;">🚀 Отправить заявку</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="features">
+        <div class="container">
+            <h2 class="section-title">Почему выбирают нас</h2>
+            <p class="section-subtitle">Мы работаем на результат и ценим ваше время</p>
+            <div class="features-grid">
+                <div class="feature"><div class="feature-icon">⚡</div><h3>Быстрый отклик</h3><p>Связываемся с вами в течение 15 минут и бесплатно рассчитываем стоимость.</p></div>
+                <div class="feature"><div class="feature-icon">🛡️</div><h3>Гарантия 3 года</h3><p>Даём письменную гарантию на все виды выполненных работ.</p></div>
+                <div class="feature"><div class="feature-icon">💎</div><h3>Опытные мастера</h3><p>Средний опыт наших плиточников — более 8 лет.</p></div>
+                <div class="feature"><div class="feature-icon">📋</div><h3>Договор и смета</h3><p>Работаем официально, фиксируем цену и сроки в договоре.</p></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div class="admin-panel" id="panelPage">
+    <div class="container">
+        <div class="panel-heading">
+            <div>
+                <h1 id="panelTitle">Мои заявки</h1>
+                <p id="panelSubtitle">Управление вашими заявками</p>
+            </div>
+            <button class="btn btn-primary" onclick="openRequest()">+ Новая заявка</button>
+        </div>
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="filters" id="filtersBlock"></div>
+        <div id="requestsList"></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="authModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('authModal')" aria-label="Закрыть">✕</button>
+        <h2 id="authTitle">Вход</h2>
+        <p class="modal-subtitle" id="authSubtitle">Войдите, чтобы управлять заявками</p>
+        <div class="tabs">
+            <button class="tab active" onclick="switchAuthTab('login')" id="tabLogin">Вход</button>
+            <button class="tab" onclick="switchAuthTab('register')" id="tabRegister">Регистрация</button>
+        </div>
+        <form id="authForm" onsubmit="submitAuth(event)">
+            <div class="form-group" id="nameField" style="display:none;">
+                <label>Имя</label>
+                <input type="text" name="name" placeholder="Иван Петров" autocomplete="name">
+            </div>
+            <div class="form-group"><label>Email</label><input type="email" name="email" required placeholder="user@example.com" autocomplete="email"></div>
+            <div class="form-group"><label>Пароль</label><input type="password" name="password" required placeholder="Минимум 4 символа" minlength="4" autocomplete="current-password"></div>
+            <button type="submit" class="btn btn-primary" style="width:100%; padding:14px;">Продолжить</button>
+        </form>
+        <p style="text-align:center; margin-top:20px; font-size:0.8rem; color:var(--gray);">💡 Админ: <b>admin@tile.ru</b> / <b>admin</b></p>
+    </div>
+</div>
+
+<div class="modal-overlay" id="requestModal">
+    <div class="modal modal-large">
+        <button class="modal-close" onclick="closeModal('requestModal')" aria-label="Закрыть">✕</button>
+        <h2>Новая заявка</h2>
+        <p class="modal-subtitle">Заполните форму — мы свяжемся с вами в течение 15 минут</p>
+        <form id="modalRequestForm" onsubmit="submitModalRequest(event)">
+            <div class="form-row">
+                <div class="form-group"><label>Ваше имя *</label><input type="text" name="name" required autocomplete="name"></div>
+                <div class="form-group"><label>Телефон *</label><input type="tel" name="phone" required autocomplete="tel"></div>
+            </div>
+            <div class="form-group"><label>Email</label><input type="email" name="email" autocomplete="email"></div>
+            <div class="form-row">
+                <div class="form-group"><label>Тип услуги *</label>
+                    <select name="service" required>
+                        <option value="">Выберите услугу</option>
+                        <option>Укладка плитки в квартире</option>
+                        <option>Ванная комната</option>
+                        <option>Кухонный фартук</option>
+                        <option>Крупноформатная плитка</option>
+                        <option>Демонтаж старой плитки</option>
+                        <option>Тёплый пол</option>
+                        <option>Другое</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Площадь, м²</label><input type="number" name="area" min="1" inputmode="numeric"></div>
+            </div>
+            <div class="form-group"><label>Адрес объекта</label><input type="text" name="address" autocomplete="street-address"></div>
+            <div class="form-group"><label>Комментарий</label><textarea name="comment"></textarea></div>
+            <button type="submit" class="btn btn-primary" style="width:100%; padding:16px;">🚀 Отправить заявку</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="editModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('editModal')" aria-label="Закрыть">✕</button>
+        <h2>Изменить статус</h2>
+        <p class="modal-subtitle" id="editSubtitle"></p>
+        <form id="editForm" onsubmit="saveEditStatus(event)">
+            <input type="hidden" name="id">
+            <div class="form-group"><label>Статус заявки</label>
+                <select name="status" required>
+                    <option value="new">Новая</option>
+                    <option value="progress">В работе</option>
+                    <option value="done">Выполнена</option>
+                    <option value="cancelled">Отменена</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Заметка администратора</label><textarea name="adminNote" placeholder="Например: связались, обсудили детали..."></textarea></div>
+            <button type="submit" class="btn btn-primary" style="width:100%;">💾 Сохранить</button>
+        </form>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+    <div class="logo">ПлиткаПро</div>
+    <p>Профессиональные плиточные работы с 2010 года</p>
+    <p style="margin-top:20px; font-size:0.85rem;">© 2025 ПлиткаПро. Все права защищены.</p>
+</footer>
+
+<script>
+const API_BASE = '/api';
+const TOKEN_KEY = 'tilepro_token';
+const USER_KEY  = 'tilepro_user';
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+function getSession() { try { const r = localStorage.getItem(USER_KEY); return r ? JSON.parse(r) : null; } catch { return null; } }
+function setSession(user, token) { localStorage.setItem(TOKEN_KEY, token); localStorage.setItem(USER_KEY, JSON.stringify(user)); }
+function clearSession() { localStorage.removeItem(TOKEN_KEY); localStorage.removeItem(USER_KEY); }
+
+async function api(path, { method = 'GET', body } = {}) {
+    const headers = {};
+    const token = getToken();
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+    if (body !== undefined) headers['Content-Type'] = 'application/json';
+    const res = await fetch(API_BASE + path, { method, headers, body: body !== undefined ? JSON.stringify(body) : undefined });
+    let data = {};
+    try { data = await res.json(); } catch {}
+    if (!res.ok) {
+        if (res.status === 401) { clearSession(); renderAuthArea(); }
+        throw new Error(data.error || 'Ошибка запроса');
+    }
+    return data;
+}
+
+let currentAuthTab = 'login';
+let currentFilter = 'all';
+let cachedRequests = [];
+let cachedUserCount = 0;
+
+function toggleMenu() { document.getElementById('burger').classList.toggle('active'); document.getElementById('mobileMenu').classList.toggle('active'); }
+function closeMenu() { document.getElementById('burger').classList.remove('active'); document.getElementById('mobileMenu').classList.remove('active'); }
+
+function openAuth() { closeMenu(); document.getElementById('authModal').classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+function switchAuthTab(tab) {
+    currentAuthTab = tab;
+    document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+    document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+    document.getElementById('nameField').style.display = tab === 'register' ? 'block' : 'none';
+    document.getElementById('authTitle').textContent = tab === 'login' ? 'Вход' : 'Регистрация';
+    document.getElementById('authSubtitle').textContent = tab === 'login' ? 'Войдите, чтобы управлять заявками' : 'Создайте аккаунт за 10 секунд';
+}
+
+async function submitAuth(e) {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value.trim();
+    const password = form.password.value;
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    try {
+        let data;
+        if (currentAuthTab === 'register') {
+            const name = form.name.value.trim();
+            if (!name) { toast('Введите имя', 'error'); return; }
+            data = await api('/register', { method: 'POST', body: { name, email, password } });
+            toast('Регистрация успешна! 🎉', 'success');
+        } else {
+            data = await api('/login', { method: 'POST', body: { email, password } });
+            toast('Добро пожаловать, ' + data.user.name + '! 👋', 'success');
+        }
+        setSession(data.user, data.token);
+        form.reset();
+        closeModal('authModal');
+        renderAuthArea();
+        showPage('panel');
+    } catch (err) { toast(err.message, 'error'); }
+    finally { btn.disabled = false; }
+}
+
+async function logout() {
+    try { await api('/logout', { method: 'POST' }); } catch {}
+    clearSession();
+    toast('Вы вышли из аккаунта');
+    renderAuthArea();
+    showPage('home');
+    closeMenu();
+}
+
+function renderAuthArea() {
+    const s = getSession();
+    const d = document.getElementById('authArea');
+    const m = document.getElementById('mobileAuthArea');
+    if (!s) {
+        d.innerHTML = '<button class="btn btn-primary btn-small" onclick="openAuth()">Войти</button>';
+        m.innerHTML = '<button class="btn btn-primary" onclick="openAuth()">Войти</button>';
+    } else {
+        d.innerHTML = '<div class="user-info"><div class="avatar" title="' + escapeHtml(s.name) + '">' + escapeHtml(s.name[0].toUpperCase()) + '</div><button class="btn btn-outline btn-small" onclick="showPage(\'panel\')">Кабинет</button><button class="btn btn-small" style="background:#f1f5f9; color:#64748b;" onclick="logout()">Выйти</button></div>';
+        m.innerHTML = '<button class="btn btn-outline" onclick="showPage(\'panel\'); closeMenu();">👤 Кабинет (' + escapeHtml(s.name) + ')</button><button class="btn" style="background:#f1f5f9; color:#64748b;" onclick="logout()">Выйти</button>';
+    }
+}
+
+function showPage(page) {
+    if (page === 'panel') {
+        const s = getSession();
+        if (!s) { openAuth(); return; }
+        document.getElementById('homePage').style.display = 'none';
+        document.getElementById('panelPage').classList.add('active');
+        renderPanel();
+        window.scrollTo(0, 0);
+    } else {
+        document.getElementById('homePage').style.display = 'block';
+        document.getElementById('panelPage').classList.remove('active');
+    }
+}
+
+function scrollToSection(id) {
+    closeMenu();
+    if (getSession() && document.getElementById('panelPage').classList.contains('active')) showPage('home');
+    setTimeout(() => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 50);
+}
+
+async function submitRequest(e) {
+    e.preventDefault();
+    const form = e.target;
+    const data = {
+        name: form.name.value.trim(), phone: form.phone.value.trim(),
+        email: form.email.value.trim(), service: form.service.value,
+        area: form.area.value, address: form.address.value.trim(),
+        comment: form.comment.value.trim()
+    };
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    try {
+        await api('/requests', { method: 'POST', body: data });
+        form.reset();
+        toast('Заявка отправлена! Мы свяжемся с вами ✅', 'success');
+    } catch (err) { toast(err.message, 'error'); }
+    finally { btn.disabled = false; }
+}
+
+function openRequest() {
+    closeMenu();
+    const s = getSession();
+    if (!s) { openAuth(); return; }
+    const form = document.getElementById('modalRequestForm');
+    form.reset();
+    form.name.value = s.name;
+    form.email.value = s.email || '';
+    document.getElementById('requestModal').classList.add('active');
+}
+
+async function submitModalRequest(e) {
+    e.preventDefault();
+    const form = e.target;
+    const data = {
+        name: form.name.value.trim(), phone: form.phone.value.trim(),
+        email: form.email.value.trim(), service: form.service.value,
+        area: form.area.value, address: form.address.value.trim(),
+        comment: form.comment.value.trim()
+    };
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    try {
+        await api('/requests', { method: 'POST', body: data });
+        form.reset();
+        closeModal('requestModal');
+        toast('Заявка создана ✅', 'success');
+        renderPanel();
+    } catch (err) { toast(err.message, 'error'); }
+    finally { btn.disabled = false; }
+}
+
+async function renderPanel() {
+    const s = getSession();
+    if (!s) return;
+    const isAdmin = s.role === 'admin';
+    document.getElementById('panelTitle').textContent = isAdmin ? 'Панель администратора' : 'Мои заявки';
+    document.getElementById('panelSubtitle').textContent = isAdmin ? 'Все заявки клиентов и управление ими' : 'Здесь отображаются ваши заявки';
+    try {
+        const reqs = await api('/requests');
+        cachedRequests = reqs;
+        if (isAdmin) {
+            try { const r = await api('/users/count'); cachedUserCount = r.count; } catch { cachedUserCount = 0; }
+        }
+        renderStats(reqs, isAdmin);
+        renderFilters();
+        const filtered = currentFilter === 'all' ? reqs : reqs.filter(r => r.status === currentFilter);
+        renderRequestsList(filtered, isAdmin);
+    } catch (err) { toast(err.message, 'error'); }
+}
+
+function renderStats(reqs, isAdmin) {
+    const total = reqs.length;
+    const newR = reqs.filter(r => r.status === 'new').length;
+    const progress = reqs.filter(r => r.status === 'progress').length;
+    const done = reqs.filter(r => r.status === 'done').length;
+    let html = '<div class="stat-card"><div class="stat-value">' + total + '</div><div class="stat-label">' + (isAdmin ? 'Всего заявок' : 'Моих заявок') + '</div></div>' +
+        '<div class="stat-card"><div class="stat-value">' + newR + '</div><div class="stat-label">Новых</div></div>' +
+        '<div class="stat-card"><div class="stat-value">' + progress + '</div><div class="stat-label">В работе</div></div>' +
+        '<div class="stat-card"><div class="stat-value">' + done + '</div><div class="stat-label">Выполнено</div></div>';
+    if (isAdmin) html += '<div class="stat-card"><div class="stat-value">' + cachedUserCount + '</div><div class="stat-label">Клиентов</div></div>';
+    document.getElementById('statsGrid').innerHTML = html;
+}
+
+function renderFilters() {
+    const filters = [
+        { key: 'all', label: 'Все' },
+        { key: 'new', label: 'Новые' },
+        { key: 'progress', label: 'В работе' },
+        { key: 'done', label: 'Выполненные' },
+        { key: 'cancelled', label: 'Отменённые' }
+    ];
+    document.getElementById('filtersBlock').innerHTML = filters.map(f =>
+        '<button class="filter-btn ' + (currentFilter === f.key ? 'active' : '') + '" onclick="setFilter(\'' + f.key + '\')">' + f.label + '</button>'
+    ).join('');
+}
+
+function setFilter(key) { currentFilter = key; renderPanel(); }
+
+function renderRequestsList(reqs, isAdmin) {
+    const list = document.getElementById('requestsList');
+    if (!reqs.length) { list.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Заявок пока нет</p></div>'; return; }
+    const statusLabels = { new: 'Новая', progress: 'В работе', done: 'Выполнена', cancelled: 'Отменена' };
+    list.innerHTML = reqs.map(r => {
+        const date = new Date(r.createdAt).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        let clientInfo = '';
+        if (isAdmin && r.client) clientInfo = '👤 Клиент: <b>' + escapeHtml(r.client.name) + '</b> (' + escapeHtml(r.client.email || '') + ')';
+        return '<div class="request-card"><div class="request-header"><div style="min-width:0;">' +
+            '<div class="request-title">' + escapeHtml(r.service) + '</div>' +
+            '<div class="request-meta">' +
+                '<span>📞 ' + escapeHtml(r.name) + ' — ' + escapeHtml(r.phone) + '</span>' +
+                (r.email ? '<span>✉️ ' + escapeHtml(r.email) + '</span>' : '') +
+                (r.area ? '<span>📐 Площадь: ' + escapeHtml(r.area) + ' м²</span>' : '') +
+                (r.address ? '<span>📍 ' + escapeHtml(r.address) + '</span>' : '') +
+                (clientInfo ? '<span>' + clientInfo + '</span>' : '') +
+                '<span>🕐 ' + date + '</span>' +
+            '</div></div>' +
+            '<span class="status-badge status-' + r.status + '">' + statusLabels[r.status] + '</span></div>' +
+            (r.comment ? '<p style="color:var(--gray); margin-top:10px; font-size:0.9rem;">💬 ' + escapeHtml(r.comment) + '</p>' : '') +
+            (r.adminNote ? '<p style="margin-top:10px; padding:10px 14px; background:#fef3c7; border-radius:10px; font-size:0.9rem;"><b>Заметка:</b> ' + escapeHtml(r.adminNote) + '</p>' : '') +
+            '<div class="request-actions">' +
+                (isAdmin
+                    ? '<button class="btn btn-success btn-small" onclick="openEdit(' + r.id + ')">✏️ Статус</button>' +
+                      '<button class="btn btn-outline btn-small" onclick="quickStatus(' + r.id + ', \'progress\')">⏳ В работу</button>' +
+                      '<button class="btn btn-outline btn-small" onclick="quickStatus(' + r.id + ', \'done\')">✅ Выполнено</button>' +
+                      '<button class="btn btn-danger btn-small" onclick="deleteRequest(' + r.id + ')">🗑 Удалить</button>'
+                    : (r.status === 'new' ? '<button class="btn btn-outline btn-small" onclick="cancelOwn(' + r.id + ')">Отменить заявку</button>' : '')) +
+            '</div></div>';
+    }).join('');
+}
+
+function openEdit(id) {
+    const r = cachedRequests.find(x => x.id === id);
+    if (!r) return;
+    const form = document.getElementById('editForm');
+    form.id.value = r.id;
+    form.status.value = r.status;
+    form.adminNote.value = r.adminNote || '';
+    document.getElementById('editSubtitle').textContent = r.service + ' — ' + r.name;
+    document.getElementById('editModal').classList.add('active');
+}
+
+async function saveEditStatus(e) {
+    e.preventDefault();
+    const form = e.target;
+    const id = Number(form.id.value);
+    try {
+        await api('/requests/' + id, { method: 'PATCH', body: { status: form.status.value, adminNote: form.adminNote.value.trim() } });
+        closeModal('editModal');
+        toast('Статус обновлён ✅', 'success');
+        renderPanel();
+    } catch (err) { toast(err.message, 'error'); }
+}
+
+async function quickStatus(id, status) {
+    try {
+        await api('/requests/' + id, { method: 'PATCH', body: { status } });
+        toast('Статус обновлён ✅', 'success');
+        renderPanel();
+    } catch (err) { toast(err.message, 'error'); }
+}
+
+async function deleteRequest(id) {
+    if (!confirm('Удалить эту заявку?')) return;
+    try {
+        await api('/requests/' + id, { method: 'DELETE' });
+        toast('Заявка удалена 🗑', 'success');
+        renderPanel();
+    } catch (err) { toast(err.message, 'error'); }
+}
+
+async function cancelOwn(id) {
+    if (!confirm('Отменить вашу заявку?')) return;
+    try {
+        await api('/requests/' + id, { method: 'PATCH', body: { status: 'cancelled' } });
+        toast('Заявка отменена', 'success');
+        renderPanel();
+    } catch (err) { toast(err.message, 'error'); }
+}
+
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+let toastTimer;
+function toast(message, type = '') {
+    const el = document.getElementById('toast');
+    el.textContent = message;
+    el.className = 'toast show ' + type;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('active'); });
+});
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+        closeMenu();
+    }
+});
+
+document.addEventListener('click', e => {
+    const menu = document.getElementById('mobileMenu');
+    const burger = document.getElementById('burger');
+    if (menu.classList.contains('active') && !menu.contains(e.target) && !burger.contains(e.target)) closeMenu();
+});
+
+let lastScrollY = window.scrollY;
+window.addEventListener('scroll', () => {
+    if (Math.abs(window.scrollY - lastScrollY) > 50) {
+        if (document.getElementById('mobileMenu').classList.contains('active')) closeMenu();
+        lastScrollY = window.scrollY;
+    }
+});
+
+window.addEventListener('resize', () => { if (window.innerWidth > 768) closeMenu(); });
+
+renderAuthArea();
+
+(async () => {
+    if (getToken()) {
+        try { const r = await api('/me'); setSession(r.user, getToken()); renderAuthArea(); } catch {}
+    }
+})();
+
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+            observer.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.service-card, .feature, .form-wrapper').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+});
+</script>
+</body>
+</html>
